@@ -22,7 +22,7 @@ const startEmployeeTracker = () => {
                 viewRoles();
                 break;
             case 'View All Employees':
-                viewEmployees;
+                viewEmployees();
                 break;
             case 'Add a Department':
                 addDepartment();
@@ -45,6 +45,7 @@ const viewDepartment = () => {
     db.query(sql, (err, result)=>{
         if(err) throw err;
         console.table(result);
+        startEmployeeTracker();
     });
 };
 
@@ -53,10 +54,24 @@ const viewRoles = () => {
     db.query(sql, (err, result)=>{
         if(err) throw err;
         console.table(result);
+        startEmployeeTracker();
     });
 };
 
-const viewEmployees = () => {};
+const viewEmployees = () => {
+    const sql = `SELECT employee.*, roles.title
+                AS job_title
+                FROM employee
+                LEFT JOIN roles ON employee.role_id = roles.id
+                LEFT JOIN department ON roles.department_id = department.id
+                LEFT JOIN employee AS manager ON employee.manager_id = manager.id`;
+    db.query(sql, (err, result)=>{
+        if(err) throw err;
+        console.table(result);
+        startEmployeeTracker();
+    });
+
+};
 
 const addDepartment = () => {};
 
