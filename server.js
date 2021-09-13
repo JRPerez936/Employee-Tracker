@@ -131,7 +131,44 @@ const addRole = () => {
     });
 };
 
-const addEmployee = () => {};
+const addEmployee = () => {
+    inquirer.prompt([
+        {
+            name: 'first_name',
+            type: 'input',
+            message: 'Please Enter the First Name of the New Employee'
+        },
+        {
+            name: 'last_name',
+            type: 'input',
+            message: 'Please Enter the Last Name of the New Employee'
+        },
+        {
+            name: 'role_id',
+            type: 'number',
+            message: 'Please Enter the Role ID Number the New Employee Should Belong To:'
+        },
+        {
+            name: 'manager_id',
+            type: 'number',
+            message: "Please Enter the ID Number of the Manager the New Employee Would Be Reporting To:"
+        },
+    ]).then(function (response) {
+        const sql =`INSERT INTO employee (first_name,last_name,role_id,manager_id) VALUES (?,?,?,?)`;
+        const params = [response.first_name, response.last_name, response.role_id, response.manager_id];
+        db.query(sql, params, (err, res) => {
+            if (err) throw (err);
+            console.log('The new employee has been created');
+            db.query(`SELECT * FROM employee`, (err, result) => {
+                if (err) {
+                    return;
+                }
+                console.table(result);
+                startEmployeeTracker();
+            });
+        });
+    });
+};
 
 const updateRole = () => {};
 
