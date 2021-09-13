@@ -73,7 +73,29 @@ const viewEmployees = () => {
 
 };
 
-const addDepartment = () => {};
+const addDepartment = () => {
+    inquirer.prompt({
+        name:'department_name',
+        type:'input',
+        message:'What is the name of the Department you would like to add?'
+    }).then(res =>{
+        const sql =`INSERT INTO department(name)
+                    VALUES (?)`;
+        const params = [res.department_name];
+        db.query(sql, params, (err, result) => {
+            if (err) throw err;
+            console.log('The Department has been added');
+
+            db.query(`SELECT * FROM department`, (err, result) => {
+                if (err) {
+                    return;
+                }
+                console.table(result);
+                startEmployeeTracker();
+            });
+        });
+    });
+};
 
 const addRole = () => {};
 
