@@ -97,7 +97,39 @@ const addDepartment = () => {
     });
 };
 
-const addRole = () => {};
+const addRole = () => {
+    inquirer.prompt([
+        {
+            name: 'title',
+            type: 'input',
+            message: 'What Role Would You Like to Add to the Database?'
+        },
+        {
+            name: 'salary',
+            type: 'input',
+            message: 'How Much Is the Salary For this Job Role? (no commas or periods)'
+        },
+        {
+            name: 'department_id',
+            type: 'input',
+            message: 'Please Enter the Department ID the Role should belong to:'
+        }
+    ]).then(function (response) {
+        const sql =`INSERT INTO roles (title,salary,department_id) VALUES (?,?,?)`;
+        const params = [response.title, response.salary, response.department_id];
+        db.query(sql,params, (err, result) => {
+            if (err) throw (err);
+            console.log('The new role has been created.');
+            db.query(`SELECT * FROM roles`, (err, result) => {
+                if (err) {
+                    return;
+                }
+                console.table(result);
+                startEmployeeTracker();
+            });
+        });
+    });
+};
 
 const addEmployee = () => {};
 
