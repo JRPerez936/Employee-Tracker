@@ -170,6 +170,39 @@ const addEmployee = () => {
     });
 };
 
-const updateRole = () => {};
+const updateRole = () => {
+    inquirer.prompt([
+        {
+            name: 'first_name',
+            type: 'input',
+            message: 'Please Enter the First Name of the Employee'
+        },
+        {
+            name: 'last_name',
+            type: 'input',
+            message: 'Please Enter the Last Name of the Employee'
+        },
+        {
+            name: 'role_id',
+            type: 'number',
+            message: "Please Enter the ID Number For the Employee's New Role:"
+
+        }
+    ]).then(function (response) {
+        const sql =`UPDATE employee SET role_id = ? WHERE first_name = ? AND last_name = ?`;
+        const params =[response.role_id, response.first_name, response.last_name];
+        db.query(sql, params, (err, result) => {
+            if (err) throw err;
+            console.log("The employee's role has been updated.");
+            db.query(`SELECT * FROM employee`, (err, result) => {
+                if (err) {
+                    return;
+                }
+                console.table(result);
+                startEmployeeTracker();
+            });
+        });
+    });
+};
 
 startEmployeeTracker();
